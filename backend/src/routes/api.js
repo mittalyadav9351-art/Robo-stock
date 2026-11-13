@@ -6,7 +6,7 @@ import { issueRequest, processReturn, adjustStock, getTransactions, exportCSV } 
 import { getProjects, createProject, updateProject } from '../controllers/projectController.js';
 import { getMaintenanceTickets, createMaintenanceTicket, updateMaintenanceTicket } from '../controllers/maintenanceController.js';
 import { getAnalytics } from '../controllers/analyticsController.js';
-import { getUsers, updateUserRole, toggleUserStatus } from '../controllers/userController.js';
+import { getUsers, createStudentUser, updateUserRole, toggleUserStatus, deleteStudentUser } from '../controllers/userController.js';
 import { getSeniors, getSeniorById, createSenior, updateSenior, deleteSenior } from '../controllers/seniorController.js';
 import { getNotifications, markAsRead, getAuditLogs, runReturnReminders } from '../controllers/notificationController.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
@@ -61,14 +61,16 @@ router.get('/analytics', protect, getAnalytics);
 // ================= SENIOR MANAGEMENT =================
 router.get('/seniors', protect, getSeniors);
 router.get('/seniors/:id', protect, getSeniorById);
-router.post('/seniors', protect, authorize('ADMIN', 'SENIOR'), createSenior);
-router.put('/seniors/:id', protect, authorize('ADMIN', 'SENIOR'), updateSenior);
-router.delete('/seniors/:id', protect, authorize('ADMIN', 'SENIOR'), deleteSenior);
+router.post('/seniors', protect, authorize('ADMIN'), createSenior);
+router.put('/seniors/:id', protect, authorize('ADMIN'), updateSenior);
+router.delete('/seniors/:id', protect, authorize('ADMIN'), deleteSenior);
 
 // ================= USER MANAGEMENT =================
-router.get('/users', protect, authorize('ADMIN'), getUsers);
+router.get('/users', protect, authorize('ADMIN', 'SENIOR'), getUsers);
+router.post('/users', protect, authorize('ADMIN'), createStudentUser);
 router.put('/users/:id/role', protect, authorize('ADMIN'), updateUserRole);
 router.put('/users/:id/status', protect, authorize('ADMIN'), toggleUserStatus);
+router.delete('/users/:id', protect, authorize('ADMIN'), deleteStudentUser);
 
 // ================= NOTIFICATIONS & AUDIT =================
 router.get('/notifications', protect, getNotifications);

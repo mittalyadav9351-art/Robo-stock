@@ -196,6 +196,15 @@ export const reviewRequest = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Request not found' });
     }
 
+    // Only authorized Seniors and Administrators have permission to approve or reject permission requests
+    const reviewerRole = String(req.user.role || '').toUpperCase();
+    if (!['SENIOR', 'ADMIN'].includes(reviewerRole)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden: Only authorized Seniors and Administrators have permission to review or approve requests.'
+      });
+    }
+
     // Prevent members from approving their own requests
     if (String(request.user) === String(req.user._id || req.user.id)) {
       return res.status(403).json({ success: false, message: 'You cannot approve your own request' });

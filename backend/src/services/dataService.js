@@ -65,6 +65,19 @@ export const dataService = {
     return null;
   },
 
+  async deleteUser(id) {
+    if (isMongoConnected) {
+      return await UserModel.findByIdAndDelete(id);
+    }
+    const idx = localStore.users.findIndex(u => u._id === id || u.id === id);
+    if (idx !== -1) {
+      const deleted = localStore.users.splice(idx, 1)[0];
+      saveLocalStore();
+      return deleted;
+    }
+    return null;
+  },
+
   // ================= SENIORS =================
   async getSeniors(filter = {}) {
     if (isMongoConnected) {

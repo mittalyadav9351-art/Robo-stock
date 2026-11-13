@@ -173,24 +173,22 @@ export const Navbar = ({
             {/* Role-Specific Portal Button */}
             <button
               onClick={() => {
-                if (role === 'SENIOR') setCurrentView('senior-portal');
+                if (role === 'SENIOR' || role === 'ADMIN') setCurrentView('management-dashboard');
                 else if (role === 'INVENTORY_MANAGER') setCurrentView('inventory-portal');
-                else if (role === 'ADMIN') setCurrentView('admin-portal');
                 else setCurrentView('dashboard');
               }}
               className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-colors relative ${
-                ['dashboard', 'senior-portal', 'inventory-portal', 'admin-portal'].includes(currentView)
+                ['dashboard', 'management-dashboard', 'senior-portal', 'admin-portal', 'inventory-portal'].includes(currentView)
                   ? 'text-white bg-slate-800/60 font-bold'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/40'
               }`}
             >
               <LayoutDashboard className="w-3.5 h-3.5 text-blue-400" />
               <span>
-                {role === 'SENIOR' ? 'Senior Approvals' :
-                 role === 'INVENTORY_MANAGER' ? 'Inventory Manager' :
-                 role === 'ADMIN' ? 'Admin Portal' : 'Dashboard'}
+                {role === 'SENIOR' || role === 'ADMIN' ? 'Management Dashboard' :
+                 role === 'INVENTORY_MANAGER' ? 'Inventory Manager' : 'Student Dashboard'}
               </span>
-              {['dashboard', 'senior-portal', 'inventory-portal', 'admin-portal'].includes(currentView) && (
+              {['dashboard', 'management-dashboard', 'senior-portal', 'admin-portal', 'inventory-portal'].includes(currentView) && (
                 <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-blue-500 rounded-full" />
               )}
             </button>
@@ -334,10 +332,9 @@ export const Navbar = ({
                           onClick={() => {
                             switchRole(account.id || account.role);
                             setIsDropdownOpen(false);
-                            if (account.role === 'SENIOR') setCurrentView('senior-portal');
+                            if (account.role === 'SENIOR' || account.role === 'ADMIN') setCurrentView('management-dashboard');
                             else if (account.role === 'INVENTORY_MANAGER') setCurrentView('inventory-portal');
-                            else if (account.role === 'ADMIN') setCurrentView('admin-portal');
-                            else setCurrentView('home');
+                            else setCurrentView('dashboard');
                           }}
                           className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                             (user?.id || user?._id) === account.id

@@ -65,37 +65,29 @@ export const LeftSidebar = ({
     }
   ];
 
-  // Portals & Admin Sections
-  const portalItems = [
-    {
-      id: 'senior-management',
-      label: 'Senior Management',
-      badge: 'Directory',
-      icon: Users,
-      badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30'
-    },
-    {
-      id: 'senior-portal',
-      label: 'Senior Approvals',
-      badge: role === 'SENIOR' || role === 'ADMIN' ? 'Active' : null,
-      icon: UserCheck,
-      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-    },
-    {
-      id: 'admin-portal',
-      label: 'Admin Dashboard',
-      badge: role === 'ADMIN' ? 'Privileged' : null,
+  // Portals & Admin Sections (Unified Management Dashboard for Admin & Senior)
+  const isManagementRole = role === 'ADMIN' || role === 'SENIOR';
+  const portalItems = [];
+
+  if (isManagementRole) {
+    portalItems.push({
+      id: 'management-dashboard',
+      label: 'Management Dashboard',
+      badge: role === 'ADMIN' ? 'Admin' : 'Senior',
       icon: ShieldCheck,
-      badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30'
-    },
-    {
+      badgeColor: role === 'ADMIN' ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+    });
+  }
+
+  if (role === 'INVENTORY_MANAGER' || role === 'ADMIN') {
+    portalItems.push({
       id: 'inventory-portal',
       label: 'Inventory Manager',
-      badge: role === 'INVENTORY_MANAGER' || role === 'ADMIN' ? 'Staff' : null,
+      badge: 'Staff',
       icon: Wrench,
       badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-    }
-  ];
+    });
+  }
 
   return (
     <>
@@ -199,50 +191,52 @@ export const LeftSidebar = ({
           </div>
 
           {/* PRIVILEGED PORTALS */}
-          <div className="pt-2 border-t border-slate-800/80">
-            <div className="px-3 mb-2 flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Staff &amp; Senior Portals
-              </span>
+          {portalItems.length > 0 && (
+            <div className="pt-2 border-t border-slate-800/80">
+              <div className="px-3 mb-2 flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Staff &amp; Management
+                </span>
+              </div>
+
+              <nav className="space-y-1">
+                {portalItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentView === item.id || (item.id === 'management-dashboard' && ['management-dashboard', 'senior-portal', 'admin-portal'].includes(currentView));
+
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setCurrentView(item.id);
+                        onClose();
+                      }}
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-bold'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3 truncate">
+                        <Icon className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
+                          isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-400'
+                        }`} />
+                        <span className="truncate">{item.label}</span>
+                      </div>
+
+                      {item.badge && (
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-md border font-mono shrink-0 ${
+                          isActive ? 'bg-white/20 text-white border-white/30' : item.badgeColor
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
             </div>
-
-            <nav className="space-y-1">
-              {portalItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = currentView === item.id;
-
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setCurrentView(item.id);
-                      onClose();
-                    }}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
-                      isActive
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-bold'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3 truncate">
-                      <Icon className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
-                        isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-400'
-                      }`} />
-                      <span className="truncate">{item.label}</span>
-                    </div>
-
-                    {item.badge && (
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded-md border font-mono shrink-0 ${
-                        isActive ? 'bg-white/20 text-white border-white/30' : item.badgeColor
-                      }`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
+          )}
 
           {/* Quick Laboratory Status Panel */}
           <div className="p-3.5 rounded-2xl bg-gradient-to-b from-slate-800/60 to-slate-900/80 border border-slate-700/60 space-y-2">

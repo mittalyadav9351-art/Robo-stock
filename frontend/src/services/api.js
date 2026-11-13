@@ -342,6 +342,23 @@ export const api = {
     return res.json();
   },
 
+  async createStudentUser(data) {
+    const res = await fetch(`${API_BASE}/users`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return res.json();
+  },
+
+  async deleteUser(id) {
+    const res = await fetch(`${API_BASE}/users/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return res.json();
+  },
+
   async updateUserRole(id, role) {
     const res = await fetch(`${API_BASE}/users/${id}/role`, {
       method: 'PUT',

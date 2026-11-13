@@ -21,9 +21,9 @@ import { useAuth } from '../../context/AuthContext';
 export const SeniorApprovalView = ({ onRefreshData = () => {}, onOpenLogin = () => {} }) => {
   const { user, role, demoAccounts, switchRole } = useAuth();
   const normalizedRole = String(role || user?.role || 'GUEST').toUpperCase();
-  const canReview = ['SENIOR', 'ADMIN'].includes(normalizedRole);
+  const canReview = normalizedRole === 'SENIOR';
   const canOperateInventory = ['SENIOR', 'ADMIN', 'INVENTORY_MANAGER'].includes(normalizedRole);
-  const seniorOrAdminAccounts = (demoAccounts || []).filter(a => ['SENIOR', 'ADMIN'].includes(String(a.role || '').toUpperCase()));
+  const seniorAccounts = (demoAccounts || []).filter(a => String(a.role || '').toUpperCase() === 'SENIOR');
   const [requests, setRequests] = useState([]);
   const [registeredSeniors, setRegisteredSeniors] = useState([]);
   const [selectedSeniorFilter, setSelectedSeniorFilter] = useState('ALL');
@@ -212,7 +212,7 @@ export const SeniorApprovalView = ({ onRefreshData = () => {}, onOpenLogin = () 
         </div>
       </div>
 
-      {/* Authorization Guard Banner when logged in as Student / Guest */}
+      {/* Authorization Guard Banner when not logged in as Senior */}
       {!canReview && (
         <div className="bg-amber-50 border border-amber-200 rounded-3xl p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-xs">
           <div className="flex items-start space-x-3">
@@ -221,23 +221,23 @@ export const SeniorApprovalView = ({ onRefreshData = () => {}, onOpenLogin = () 
             </div>
             <div>
               <h3 className="text-sm font-extrabold text-amber-950">
-                Senior or Admin Authorization Required to Approve / Reject
+                Senior Authorization Required to Approve / Reject
               </h3>
               <p className="text-xs text-amber-800 mt-0.5 leading-relaxed">
-                Currently signed in as <span className="font-bold">{user?.fullName || 'Guest'}</span> ({normalizedRole === 'MEMBER' ? 'STUDENT' : normalizedRole}). Student accounts can view only their own requests. Sign in with a <span className="font-bold">SENIOR</span> or <span className="font-bold">ADMIN</span> account to approve, reject, or issue components.
+                Currently signed in as <span className="font-bold">{user?.fullName || 'Guest'}</span> ({normalizedRole}). Only registered <span className="font-bold">SENIORS</span> (added through Senior Management) have permission to approve or reject student component requests.
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 shrink-0">
-            {seniorOrAdminAccounts.slice(0, 3).map((acc) => (
+            {seniorAccounts.slice(0, 3).map((acc) => (
               <button
                 key={acc.id || acc.role}
                 type="button"
                 onClick={() => switchRole(acc.id || acc.role)}
                 className="px-3 py-2 rounded-xl bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold transition-colors cursor-pointer"
               >
-                Switch to {acc.fullName} ({acc.role})
+                Switch to {acc.fullName} (Senior)
               </button>
             ))}
             <button
@@ -246,7 +246,7 @@ export const SeniorApprovalView = ({ onRefreshData = () => {}, onOpenLogin = () 
               className="px-3.5 py-2 rounded-xl bg-[#0B132B] hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center space-x-1.5 shadow-sm transition-colors cursor-pointer"
             >
               <LogIn className="w-3.5 h-3.5" />
-              <span>Sign In</span>
+              <span>Sign In as Senior</span>
             </button>
           </div>
         </div>

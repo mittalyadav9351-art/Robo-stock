@@ -8,6 +8,7 @@ import { ComponentDetailsModal } from './components/modals/ComponentDetailsModal
 import { RequestDrawer } from './components/requests/RequestDrawer';
 import { MyRequestsView } from './components/requests/MyRequestsView';
 import { MemberDashboard } from './components/dashboard/MemberDashboard';
+import { ManagementDashboard } from './components/management/ManagementDashboard';
 import { SeniorApprovalView } from './components/senior/SeniorApprovalView';
 import { SeniorManagementView } from './components/senior/SeniorManagementView';
 import { InventoryManagerView } from './components/inventory/InventoryManagerView';
@@ -499,17 +500,12 @@ export function App() {
             />
           )}
 
-          {/* VIEW: Senior Approval System (Requirement 6) */}
-          {currentView === 'senior-portal' && (
-            <SeniorApprovalView
+          {/* VIEW: Unified Shared Management Dashboard for Admin and Senior (Requirements 1-5) */}
+          {(currentView === 'management-dashboard' || currentView === 'senior-portal' || currentView === 'admin-portal') && (
+            <ManagementDashboard
               onRefreshData={fetchDashboardData}
-              onOpenLogin={() => setIsLoginModalOpen(true)}
+              defaultTab={currentView === 'senior-portal' ? 'requests' : 'overview'}
             />
-          )}
-
-          {/* VIEW: Administrator Center (Requirement 11) */}
-          {currentView === 'admin-portal' && (
-            <AdminView onRefreshData={fetchDashboardData} />
           )}
 
           {/* VIEW: About Robotics Lab 304 (Requirement 10) */}
@@ -591,10 +587,9 @@ export function App() {
         allowDismiss={Boolean(user)}
         onAuthSuccess={(loggedUser) => {
           const r = String(loggedUser?.role || '').toUpperCase();
-          if (r === 'SENIOR') setCurrentView('senior-portal');
-          else if (r === 'ADMIN') setCurrentView('admin-portal');
+          if (r === 'SENIOR' || r === 'ADMIN') setCurrentView('management-dashboard');
           else if (r === 'INVENTORY_MANAGER') setCurrentView('inventory-portal');
-          else if (currentView === 'senior-portal' || currentView === 'admin-portal') setCurrentView('home');
+          else if (['management-dashboard', 'senior-portal', 'admin-portal'].includes(currentView)) setCurrentView('home');
         }}
       />
 
