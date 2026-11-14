@@ -1333,6 +1333,26 @@
         "itemsCount": 1
       },
       "timestamp": "2026-11-13T08:09:39.485Z"
+    },
+    {
+      "_id": "id_lsj6oc6mwevq3pv",
+      "user": "usr_k0t3ualtx",
+      "userName": "Aarav Sharma",
+      "userRole": "MEMBER",
+      "action": "USER_LOGIN",
+      "entityType": "USER",
+      "entityId": "usr_k0t3ualtx",
+      "timestamp": "2026-11-13T11:14:17.299Z"
+    },
+    {
+      "_id": "id_mi5wq1cmwevr3ux",
+      "user": "usr_1c1tjrdvp",
+      "userName": "Prof. Ananya Iyer",
+      "userRole": "ADMIN",
+      "action": "USER_LOGIN",
+      "entityType": "USER",
+      "entityId": "usr_1c1tjrdvp",
+      "timestamp": "2026-11-13T11:15:04.137Z"
     }
   ]
 }

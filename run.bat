@@ -22,3 +22,4 @@ echo Opening browser at http://localhost:5173 ...
 start http://localhost:5173
 echo.
 echo System started successfully! You can keep this window open or close it.
+
